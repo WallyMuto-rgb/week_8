@@ -1,0 +1,800 @@
+employee-management/
+├── backend/
+│   ├── server.js
+│   ├── models/
+│   │   └── Employee.js
+│   ├── routes/
+│   │   └── employeeRoutes.js
+│   └── .env
+└── frontend/
+    └── React app files
+    employee-management/
+├── backend/
+│   ├── server.js
+│   ├── models/
+│   │   └── Employee.js
+│   ├── routes/
+│   │   └── employeeRoutes.js
+│   └── .env
+└── frontend/
+    └── React app filesconst express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+const employeeSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true
+    },
+    position: {
+      type: String,
+      required: true
+    },
+    department: {
+      type: String,
+      required: true
+    },
+    salary: {
+      type: Number,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    }
+  },
+  { timestamps: true }
+);
+
+const Employee = mongoose.model("Employee", employeeSchema);
+
+app.post("/api/employees", async (req, res) => {
+  try {
+    const employee = new Employee(req.body);
+    const savedEmployee = await employee.save();
+    res.status(201).json(savedEmployee);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.get("/api/employees", async (req, res) => {
+  try {
+    const employees = await Employee.find();
+    res.json(employees);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/api/employees/:id", async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.json(employee);
+  } catch (error) {
+    res.status(404).json({ message: "Employee not found" });
+  }
+});
+
+app.put("/api/employees/:id", async (req, res) => {
+  try {
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedEmployee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.json(updatedEmployee);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.delete("/api/employees/:id", async (req, res) => {
+  try {
+    const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
+
+    if (!deletedEmployee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.json({ message: "Employee deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB connected");
+
+    app.listen(process.env.PORT, () => {
+      console.log(`Server running on port ${process.env.PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log("MongoDB connection error:", error);
+  });const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+const employeeSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true
+    },
+    position: {
+      type: String,
+      required: true
+    },
+    department: {
+      type: String,
+      required: true
+    },
+    salary: {
+      type: Number,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    }
+  },
+  { timestamps: true }
+);
+
+const Employee = mongoose.model("Employee", employeeSchema);
+
+app.post("/api/employees", async (req, res) => {
+  try {
+    const employee = new Employee(req.body);
+    const savedEmployee = await employee.save();
+    res.status(201).json(savedEmployee);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.get("/api/employees", async (req, res) => {
+  try {
+    const employees = await Employee.find();
+    res.json(employees);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/api/employees/:id", async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.json(employee);
+  } catch (error) {
+    res.status(404).json({ message: "Employee not found" });
+  }
+});
+
+app.put("/api/employees/:id", async (req, res) => {
+  try {
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedEmployee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.json(updatedEmployee);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.delete("/api/employees/:id", async (req, res) => {
+  try {
+    const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
+
+    if (!deletedEmployee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.json({ message: "Employee deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB connected");
+
+    app.listen(process.env.PORT, () => {
+      console.log(`Server running on port ${process.env.PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log("MongoDB connection error:", error);
+  });{
+  "name": "employee-management-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "axios": "^1.6.0",
+    "vite": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "^6.22.0"
+  },
+  "devDependencies": {}
+}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Management App</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import "./style.css";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import "./style.css";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);import { useEffect, useState } from "react";
+import { Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+
+const API_URL = "http://localhost:5000/api/employees";
+
+function App() {
+  return (
+    <div>
+      <nav className="navbar">
+        <h2>Employee Management</h2>
+        <div>
+          <Link to="/">Employees</Link>
+          <Link to="/add">Add Employee</Link>
+        </div>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<EmployeeList />} />
+        <Route path="/add" element={<EmployeeForm />} />
+        <Route path="/edit/:id" element={<EmployeeForm />} />
+        <Route path="/details/:id" element={<EmployeeDetails />} />
+      </Routes>
+    </div>
+  );
+}
+
+function EmployeeList() {
+  const [employees, setEmployees] = useState([]);
+
+  const getEmployees = async () => {
+    const response = await axios.get(API_URL);
+    setEmployees(response.data);
+  };
+
+  const deleteEmployee = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this employee?"
+    );
+
+    if (confirmDelete) {
+      await axios.delete(`${API_URL}/${id}`);
+      getEmployees();
+    }
+  };
+
+  useEffect(() => {
+    getEmployees();
+  }, []);
+
+  return (
+    <main className="container">
+      <h1>Employee List</h1>
+
+      {employees.length === 0 ? (
+        <p>No employees found.</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position</th>
+              <th>Department</th>
+              <th>Salary</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {employees.map((employee) => (
+              <tr key={employee._id}>
+                <td>{employee.name}</td>
+                <td>{employee.position}</td>
+                <td>{employee.department}</td>
+                <td>${employee.salary}</td>
+                <td>{employee.email}</td>
+                <td>
+                  <Link className="btn view" to={`/details/${employee._id}`}>
+                    View
+                  </Link>
+                  <Link className="btn edit" to={`/edit/${employee._id}`}>
+                    Edit
+                  </Link>
+                  <button
+                    className="btn delete"
+                    onClick={() => deleteEmployee(employee._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </main>
+  );
+}
+
+function EmployeeForm() {
+  const [employee, setEmployee] = useState({
+    name: "",
+    position: "",
+    department: "",
+    salary: "",
+    email: ""
+  });
+
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const isEditing = Boolean(id);
+
+  useEffect(() => {
+    if (isEditing) {
+      axios.get(`${API_URL}/${id}`).then((response) => {
+        setEmployee(response.data);
+      });
+    }
+  }, [id, isEditing]);
+
+  const handleChange = (e) => {
+    setEmployee({
+      ...employee,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (isEditing) {
+      await axios.put(`${API_URL}/${id}`, employee);
+    } else {
+      await axios.post(API_URL, employee);
+    }
+
+    navigate("/");
+  };
+
+  return (
+    <main className="container">
+      <h1>{isEditing ? "Edit Employee" : "Add Employee"}</h1>
+
+      <form onSubmit={handleSubmit} className="form">
+        <label>Name</label>
+        <input
+          type="text"
+          name="name"
+          value={employee.name}
+          onChange={handleChange}
+          required
+        />
+
+        <label>Position</label>
+        <input
+          type="text"
+          name="position"
+          value={employee.position}
+          onChange={handleChange}
+          required
+        />
+
+        <label>Department</label>
+        <input
+          type="text"
+          name="department"
+          value={employee.department}
+          onChange={handleChange}
+          required
+        />
+
+        <label>Salary</label>
+        <input
+          type="number"
+          name="salary"
+          value={employee.salary}
+          onChange={handleChange}
+          required
+        />
+
+        <label>Email</label>
+        <input
+          type="email"
+          name="email"
+          value={employee.email}
+          onChange={handleChange}
+          required
+        />
+
+        <button type="submit" className="submit-btn">
+          {isEditing ? "Update Employee" : "Add Employee"}
+        </button>
+      </form>
+    </main>
+  );
+}
+
+function EmployeeDetails() {
+  const [employee, setEmployee] = useState(null);
+  const { id } = useParams();
+
+  useEffect(() => {
+    axios.get(`${API_URL}/${id}`).then((response) => {
+      setEmployee(response.data);
+    });
+  }, [id]);
+
+  if (!employee) {
+    return <p className="container">Loading employee details...</p>;
+  }
+
+  return (
+    <main className="container">
+      <h1>Employee Details</h1>
+
+      <div className="details-card">
+        <p>
+          <strong>Name:</strong> {employee.name}
+        </p>
+        <p>
+          <strong>Position:</strong> {employee.position}
+        </p>
+        <p>
+          <strong>Department:</strong> {employee.department}
+        </p>
+        <p>
+          <strong>Salary:</strong> ${employee.salary}
+        </p>
+        <p>
+          <strong>Email:</strong> {employee.email}
+        </p>
+
+        <Link className="btn edit" to={`/edit/${employee._id}`}>
+          Edit Employee
+        </Link>
+        <Link className="btn view" to="/">
+          Back to List
+        </Link>
+      </div>
+    </main>
+  );
+}
+
+export default App;* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f4f6f8;
+  font-family: Arial, sans-serif;
+  color: #222;
+}
+
+.navbar {
+  background-color: #222;
+  color: white;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 40px auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin-bottom: 25px;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #333;
+  color: white;
+}
+
+th,
+td {
+  padding: 14px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 3px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.view {
+  background-color: #3498db;
+}
+
+.edit {
+  background-color: #f39c12;
+}
+
+.delete {
+  background-color: #e74c3c;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form label {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-btn {
+  margin-top: 25px;
+  padding: 12px;
+  border: none;
+  background-color: #2ecc71;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #27ae60;
+}
+
+.details-card {
+  font-size: 18px;
+  line-height: 2;
+}* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f4f6f8;
+  font-family: Arial, sans-serif;
+  color: #222;
+}
+
+.navbar {
+  background-color: #222;
+  color: white;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 40px auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin-bottom: 25px;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #333;
+  color: white;
+}
+
+th,
+td {
+  padding: 14px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 12px;
+  margin: 3px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.view {
+  background-color: #3498db;
+}
+
+.edit {
+  background-color: #f39c12;
+}
+
+.delete {
+  background-color: #e74c3c;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form label {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-btn {
+  margin-top: 25px;
+  padding: 12px;
+  border: none;
+  background-color: #2ecc71;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #27ae60;
+}
+
+.details-card {
+  font-size: 18px;
+  line-height: 2;
+}npm install
+npm run dev
